@@ -2,6 +2,7 @@
 Code for the paper "LatentFed: Reliability-Aware Latent Representations for Clustered Federated Learning under Statistical Heterogeneity"
 
 In this repo you can find the notebook and be able to launch the experiments over 5 seeds "42, 101, 2024, 3407, 8888" and different Dirichlet distributions for the data partitioning following these alphas "0.3, 0.5, 0.7" 
+
 Datasets: "Cifar-10", "EMNIST"
 
 Abstract of the paper:
