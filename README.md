@@ -7,9 +7,8 @@ Reproducible experiments for **LatentFed: Reliability-Aware Latent Representatio
 | [01 — LatentFed full](notebooks/01_latentfed_full.ipynb) | Convolutional autoencoder, MDFE and CALD |
 | [02 — LatentFed ablations](notebooks/02_latentfed_ablations.ipynb) | Full, w/o MDFE, w/o CALD, fully connected AE only |
 | [03 — FedAC](notebooks/03_fedac.ipynb) | FedAC with matched partitions and training budget |
-| [04 — FedProto](notebooks/04_fedproto.ipynb) | FedProto with matched partitions and training budget |
 
-The notebooks contain setup, an explicit experiment grid, model inspection, execution, results and ZIP export. The implementation lives in [`src/latentfed_repro`](src/latentfed_repro); importing it does not start training. Each notebook enables `DATASETS = ["cifar10", "emnist"]`.
+The notebooks contain setup, an explicit experiment grid, model inspection, execution, results and ZIP export. Each notebook enables `DATASETS = ["cifar10", "emnist"]`.
 
 ## Installation and first run
 
@@ -94,32 +93,3 @@ Each run writes `config.json`, `manifest.json`, `round_metrics.csv`, `client_met
 An endpoint averages **rounds 91–100 within one seed**. `five_seed_summary.csv` then reports the mean and **sample standard deviation (ddof=1) across the five seed endpoints**. Accuracy columns in that file are percentages. `seed_coverage.csv` reports completed real-data seed coverage. A publication row requires all five official seeds with matching settings and source. Undefined clustering metrics remain missing. FedProto has no client clusters, so MC/BC/WC and geometric cluster scores are not applicable. Round metrics retain fractional accuracies.
 
 With `RESUME = True`, a run resumes its local checkpoint or reuses its completed result. Source, scientific settings, data/initialization/schedule hashes and runtime identity are checked. Restore the run folder hierarchy when moving an output archive to another session. Checkpoints are excluded from the compact results ZIP by default; set `INCLUDE_CHECKPOINTS_IN_ZIP = True` to include them. Raw datasets are cached separately and are never included in result ZIPs.
-
-## Command line and validation
-
-```bash
-# Full real-data grids
-python -m latentfed_repro.cli --method latentfed
-python -m latentfed_repro.cli --method latentfed --variants full no_mdfe no_cald ae_only
-python -m latentfed_repro.cli --method fedac
-python -m latentfed_repro.cli --method fedproto
-
-# Offline validation, including both dataset shapes and 20/20 participation
-python -m unittest discover -s tests -v
-python scripts/validate_notebooks.py
-```
-
-Smoke mode uses synthetic tensors, two rounds and seed 7; it shortens CALD warm-up to exercise the relevant code paths. Smoke results are stored separately and excluded from publication aggregation. The [validation report](docs/VALIDATION_REPORT.md) distinguishes these execution checks from a complete GPU experiment grid.
-
-## Repository layout and provenance
-
-```text
-notebooks/                 Four execution workflows
-src/latentfed_repro/        Models, preserved scientific definitions and run adapters
-tests/                     Offline protocol, execution, resume and aggregation checks
-scripts/                   Notebook generation and top-to-bottom validation
-docs/                      Protocol, provenance and validation records
-.github/workflows/         Automated CPU smoke checks
-```
-
-The [reproducibility map](docs/REPRODUCIBILITY.md) links the three requested code additions to their implementation. [Source fingerprints](docs/SOURCE_PROVENANCE.json) identify preserved definitions; the fully connected AE and public run/export adapters are explicit additions. The repository retains its [Apache-2.0 license](LICENSE); see [attributions](THIRD_PARTY_NOTICES.md).
